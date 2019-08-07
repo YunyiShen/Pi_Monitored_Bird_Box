@@ -1,0 +1,11 @@
+{
+    "PIRpin" : 25,
+    "number_DHTsensors" : 2,
+    "DHTpin" : [16,17] , 
+    "DHTsensor" : ["DHT11","DHT11"] , 
+    "picture_dir" : "/home/pi/feeder",
+    "max_error" : 200,
+    "log_interval" : 1800,
+	"det_interval" : 5,
+	"loop_interval" : 1
+}
