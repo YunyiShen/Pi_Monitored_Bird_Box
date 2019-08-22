@@ -3,9 +3,9 @@
     "number_DHTsensors" : 2,
     "DHTpin" : [16,17] , 
     "DHTsensor" : ["DHT11","DHT11"] , 
-    "picture_dir" : "/home/pi/feeder",
+    "picture_dir" : "/home/pi/Bird Box/Pi_Monitored_Bird_Box/pic",
     "max_error" : 200,
-    "log_interval" : 1800,
+    "log_interval" : 900,
 	"det_interval" : 5,
 	"loop_interval" : 1
 }

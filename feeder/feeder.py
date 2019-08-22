@@ -13,7 +13,7 @@ def getTepHum(sensor,pin):
          }
     return res
 
-def main()
+def main():
     err_count = 0
     pic_count = 1
     try:
@@ -25,9 +25,10 @@ def main()
         return 0 # fatal     
     config_json.close() # close config file
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(config["PIR"], GPIO.IN) #PIR set up
+    GPIO.setup(config["PIRpin"], GPIO.IN) #PIR set up
     time.sleep(2) # to stabilize sensor
     last_time = datetime.datetime.now() # record time for compare
+    camera = PiCamera()
     
     while (err_count <= config["max_error"]):
         try:
@@ -36,24 +37,30 @@ def main()
                 pic_count += 1
                 time.sleep(config['det_interval']) #to avoid multiple detection
         except:
+            #GPIO.setup(config["PIRpin"], GPIO.IN) #PIR set up
             GPIO.cleanup()
-            with open('errlog.txt', 'w', encoding='utf-8') as err_log:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(config["PIRpin"], GPIO.IN) #PIR set up
+            time.sleep(2)
+
+            with open('errlog.txt', 'a', encoding='utf-8') as err_log:
                 err_log.write(str(datetime.datetime.now())+' PIR sensor error detected\n')
             err_log.close()
             err_count += 1
         
         current_time = datetime.datetime.now()
         if ((current_time-last_time).total_seconds())>=config["log_interval"]:  # log temp etc. if time is long encough 
-            
-            for i in range(1,config['number_DHTsensors']): # can be any type of DHT sensors, 
+            for i in range(config['number_DHTsensors']): # can be any type of DHT sensors, 
                 
                 env = getTepHum(config['DHTsensor'][i],config['DHTpin'][i])
-                env['time'] = current_time
-                try : 
-                    with open('DHTsensor_'+str(i)+'_data.json','w','utf-8') as data_log:
-                    json.dump(env,data_log)
+                env['time'] = str(current_time)
+                #env['sensor'] = i
+                try :
+                    log_dir = 'DHTsensor'+str(i)+'_data.json'
+                    with open(log_dir,'a',encoding = 'utf-8') as data_log:
+                        json.dump(env,data_log)
                 except IOError as e:
-                    with open('errlog.txt', 'w', encoding='utf-8') as err_log:
+                    with open('errlog.txt', 'a', encoding='utf-8') as err_log:
                         err_log.write(str(datetime.datetime.now())+' DHT sensor '+str(i)+' error '+e+'\n')
                     err_count += 1
                     err_log.close()
